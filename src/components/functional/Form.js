@@ -16,17 +16,20 @@ class FormProvider extends React.Component {
       validators: {},
       pristine: {},
       submitting: false,
+      submitFailed: false,
       submitFormError: "",
-      submitErrors: {}
+      submitErrors: {},
+      currentPage: 0
     };
 
     this.registerField = this.registerField.bind(this);
     this.unregisterField = this.unregisterField.bind(this);
     this.updateValue = this.updateValue.bind(this);
     this.makeFieldDirty = this.makeFieldDirty.bind(this);
-    this.isAbleToSubmit = this.isAbleToSubmit.bind(this);
+    this.isFormValid = this.isFormValid.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.packRenderProps = this.packRenderProps.bind(this);
+    this.packSubmitErrors = this.packSubmitErrors.bind(this);
   }
 
   registerField(fieldName, validator) {
@@ -64,6 +67,10 @@ class FormProvider extends React.Component {
     }));
   }
 
+  nextPage() {
+    this.setState(state => ({ currentPage: state.currentPage + 1 }));
+  }
+
   packContextValue() {
     return {
       formState: this.state,
@@ -74,27 +81,50 @@ class FormProvider extends React.Component {
     };
   }
 
-  isAbleToSubmit() {
-    const { values, errors, validators } = this.state;
-    const fields = Object.keys(values)
+  isFormValid() {
+    const { values, validators } = this.state;
 
-    const newErrors = fields.reduce((errors, field) =>
-      ({ ...errors, [field]: validators[field](values[field])}),
+    const errors = Object.keys(validators).reduce(
+      (errors, field) => ({
+        ...errors,
+        [field]: validators[field](values[field])
+      }),
       {}
-    )
-
-    this.setState({ errors: newErrors })
-
-    return Object.keys(newErrors).reduce(
-      (isAble, field) => !isAble || !newErrors[field],
-      true
     );
+
+    const fieldsWithErrors = Object.keys(errors).filter(field => errors[field]);
+
+    this.setState(state => ({
+      errors,
+      pristine: {
+        ...Object.keys(state.pristine).reduce(
+          (acc, field) => ({ ...acc, [field]: false }),
+          {}
+        )
+      }
+    }));
+
+    return !fieldsWithErrors.length;
+  }
+
+  packSubmitErrors(errors) {
+    if (!errors || !Object.keys(errors).length) {
+      return {
+        submitErrors: {},
+        submitFormError: ""
+      };
+    }
+
+    return {
+      submitErrors: { ...errors, [FORM_ERROR]: undefined },
+      submitFormError: errors[FORM_ERROR]
+    };
   }
 
   onSubmit(e) {
     e.preventDefault();
 
-    if (!this.isAbleToSubmit()) {
+    if (!this.isFormValid()) {
       return;
     }
 
@@ -103,17 +133,23 @@ class FormProvider extends React.Component {
 
     if (isPromise(res)) {
       res
-        .then(() => this.setState({ submitting: false }))
+        .then(() => this.setState({ submitting: false, submitFailed: false }))
         .catch(err =>
-          this.setState({ submitting: false, submitFormError: err })
+          this.setState({
+            submitting: false,
+            submitFailed: true,
+            ...this.packSubmitErrors(err)
+          })
         );
 
       return;
     }
 
+    const isError = !!res && !!Object.keys(res).length;
     this.setState({
       submitting: false,
-      submitFormError: (res && res[FORM_ERROR]) || ""
+      submitFailed: isError,
+      ...this.packSubmitErrors(res)
     });
 
     return;
@@ -141,7 +177,10 @@ class FormProvider extends React.Component {
 
 FormProvider.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  children: PropTypes.func.isRequired
+  children: PropTypes.func.isRequired,
+
+  wizard: PropTypes.bool,
+  pages: PropTypes.number
 };
 
 export default FormProvider;
