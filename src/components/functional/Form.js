@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 
 import { isPromise } from "util/promise";
 
-const FORM_ERROR = "%%FORM_ERROR%%";
 const FormContext = React.createContext();
+export const FormConsumer = FormContext.Consumer;
+export const FORM_ERROR = "%%FORM_ERROR%%";
 
 class FormProvider extends React.Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class FormProvider extends React.Component {
       submitFailed: false,
       submitFormError: "",
       submitErrors: {},
-      currentPage: 0
+      currentPage: props.pages ? props.pages[0] : ""
     };
 
     this.registerField = this.registerField.bind(this);
@@ -30,18 +31,24 @@ class FormProvider extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.packRenderProps = this.packRenderProps.bind(this);
     this.packSubmitErrors = this.packSubmitErrors.bind(this);
+    this.previousPage = this.previousPage.bind(this);
+    this.nextPage = this.nextPage.bind(this);
   }
 
-  registerField(fieldName, validator) {
+  registerField(fieldName, validator, initialValue = "") {
     this.setState(
       state => ({
         validators: {
           ...state.validators,
-          [fieldName]: validator || (() => undefined)
+          [fieldName]: validator
         },
         pristine: { ...state.pristine, [fieldName]: true }
       }),
-      () => this.updateValue(fieldName, "")
+      () =>
+        this.updateValue(
+          fieldName,
+          this.state.values[fieldName] || initialValue
+        )
     );
   }
 
@@ -52,13 +59,17 @@ class FormProvider extends React.Component {
   }
 
   updateValue(fieldName, value) {
-    this.setState(state => ({
-      values: { ...state.values, [fieldName]: value },
-      errors: {
-        ...state.errors,
-        [fieldName]: state.validators[fieldName](value)
-      }
-    }));
+    this.setState(state => {
+      return {
+        values: { ...state.values, [fieldName]: value },
+        errors: {
+          ...state.errors,
+          [fieldName]: state.validators[fieldName]
+            ? state.validators[fieldName](value)
+            : undefined
+        }
+      };
+    });
   }
 
   makeFieldDirty(fieldName) {
@@ -67,8 +78,42 @@ class FormProvider extends React.Component {
     }));
   }
 
+  previousPage() {
+    const { currentPage } = this.state;
+    const { pages } = this.props;
+
+    if (this.isFormValid()) {
+      if (currentPage === pages[0]) {
+        return;
+      }
+
+      this.setState(({ currentPage }) => {
+        const previousPage = currentPage
+          ? pages[pages.findIndex(page => page === currentPage) - 1]
+          : pages[0];
+
+        return { currentPage: previousPage };
+      });
+    }
+  }
+
   nextPage() {
-    this.setState(state => ({ currentPage: state.currentPage + 1 }));
+    const { currentPage } = this.state;
+    const { pages } = this.props;
+
+    if (this.isFormValid()) {
+      if (currentPage === pages[pages.length]) {
+        return;
+      }
+
+      this.setState(({ currentPage }) => {
+        const nextPage = currentPage
+          ? pages[pages.findIndex(page => page === currentPage) + 1]
+          : pages[0];
+
+        return { currentPage: nextPage };
+      });
+    }
   }
 
   packContextValue() {
@@ -77,20 +122,26 @@ class FormProvider extends React.Component {
       registerField: this.registerField,
       unregisterField: this.unregisterField,
       updateValue: this.updateValue,
-      makeFieldDirty: this.makeFieldDirty
+      makeFieldDirty: this.makeFieldDirty,
+      previousPage: this.previousPage,
+      nextPage: this.nextPage
     };
   }
 
   isFormValid() {
     const { values, validators } = this.state;
 
-    const errors = Object.keys(validators).reduce(
-      (errors, field) => ({
-        ...errors,
-        [field]: validators[field](values[field])
-      }),
-      {}
-    );
+    const errors = Object.keys(validators)
+      .filter(field => validators[field])
+      .reduce(
+        (errors, field) => ({
+          ...errors,
+          [field]: validators[field]
+            ? validators[field](values[field])
+            : undefined
+        }),
+        {}
+      );
 
     const fieldsWithErrors = Object.keys(errors).filter(field => errors[field]);
 
@@ -156,11 +207,12 @@ class FormProvider extends React.Component {
   }
 
   packRenderProps() {
-    const { submitting, submitFormError } = this.state;
+    const { submitting, submitFormError, currentPage } = this.state;
 
     return {
       submitting,
-      submitFormError
+      submitFormError,
+      currentPage
     };
   }
 
@@ -179,9 +231,7 @@ FormProvider.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   children: PropTypes.func.isRequired,
 
-  wizard: PropTypes.bool,
-  pages: PropTypes.number
+  pages: PropTypes.arrayOf(PropTypes.string)
 };
 
 export default FormProvider;
-export const FormConsumer = FormContext.Consumer;

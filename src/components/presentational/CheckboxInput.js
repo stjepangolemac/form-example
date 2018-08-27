@@ -7,15 +7,15 @@ const Error = styled.p`
   font-size: 0.75em;
 `;
 
-const TextInput = ({ label, type, input, meta: { pristine, error } }) => (
+const CheckboxInput = ({ label, input, meta: { pristine, error } }) => (
   <React.Fragment>
-    <label htmlFor={input.id}>{label}:</label>
-    <input {...input} type={type || "text"} />
+    <input {...input} type="checkbox" />
+    <label htmlFor={input.id}>{label}</label>
     <Error>{!pristine && error}</Error>
   </React.Fragment>
 );
 
-TextInput.propTypes = {
+CheckboxInput.propTypes = {
   input: PropTypes.shape({
     value: PropTypes.string,
     onChange: PropTypes.func
@@ -24,8 +24,7 @@ TextInput.propTypes = {
     error: PropTypes.string,
     pristine: PropTypes.bool
   }),
-  label: PropTypes.string,
-  type: PropTypes.string
+  label: PropTypes.string
 };
 
-export default TextInput;
+export default CheckboxInput;

@@ -10,13 +10,19 @@ const FieldWrapper = props => (
 );
 
 class Field extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.isCheckbox = this.isCheckbox.bind(this);
+  }
+
   componentDidMount() {
     const {
       registerField,
-      fieldProps: { name, validator }
+      fieldProps: { name, validator, type }
     } = this.props;
 
-    registerField(name, validator);
+    registerField(name, validator, this.isCheckbox() ? false : undefined);
   }
 
   componentWillUnmount() {
@@ -26,6 +32,10 @@ class Field extends React.Component {
     } = this.props;
 
     unregisterField(name);
+  }
+
+  isCheckbox() {
+    return this.props.fieldProps.type === "checkbox";
   }
 
   packInputProps() {
@@ -38,8 +48,13 @@ class Field extends React.Component {
 
     return {
       id: name,
-      value: formState.values[name] || "",
-      onChange: e => updateValue(name, e.target.value + ""),
+      value: this.isCheckbox() ? undefined : formState.values[name] || "",
+      checked: this.isCheckbox() ? formState.values[name] || false : undefined,
+      onChange: e =>
+        updateValue(
+          name,
+          this.isCheckbox() ? !formState.values[name] : e.target.value + ""
+        ),
       onBlur: () => makeFieldDirty(name)
     };
   }
@@ -85,7 +100,8 @@ Field.propTypes = {
   fieldProps: PropTypes.shape({
     component: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
-    validator: PropTypes.func
+    validator: PropTypes.func,
+    type: PropTypes.string
   })
 };
 
