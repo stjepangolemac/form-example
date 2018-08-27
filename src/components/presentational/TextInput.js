@@ -7,11 +7,21 @@ const Error = styled.p`
   font-size: 0.75em;
 `;
 
-const TextInput = ({ label, type, input, meta: { pristine, error } }) => (
+const Red = styled.span`
+  color: red;
+`
+
+const TextInput = ({
+  label,
+  type,
+  input,
+  meta: { pristine, error, submitError }
+}) => (
   <React.Fragment>
-    <label htmlFor={input.id}>{label}:</label>
+    <label htmlFor={input.id}>{label}: <Red>*</Red></label>
+    <br />
     <input {...input} type={type || "text"} />
-    <Error>{!pristine && error}</Error>
+    <Error>{(!pristine && error) || submitError}</Error>
   </React.Fragment>
 );
 
@@ -22,10 +32,12 @@ TextInput.propTypes = {
   }),
   meta: PropTypes.shape({
     error: PropTypes.string,
+    submitError: PropTypes.string,
     pristine: PropTypes.bool
   }),
   label: PropTypes.string,
-  type: PropTypes.string
+  type: PropTypes.string,
+  required: PropTypes.bool
 };
 
 export default TextInput;

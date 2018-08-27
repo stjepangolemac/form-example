@@ -1,4 +1,5 @@
 import React from "react";
+import styled from 'styled-components'
 
 import Form, { FORM_ERROR } from "func/Form";
 import Field from "func/Field";
@@ -8,19 +9,48 @@ import AppContainer from "pres/AppContainer";
 import TextInput from "pres/TextInput";
 import CheckboxInput from "pres/CheckboxInput";
 
-import { isEmpty } from "util/validators";
+import {
+  combineValidators,
+  isEmpty,
+  isEmail,
+  makeMin,
+  oneNum,
+  oneLow,
+  oneUpp
+} from "util/validators";
+
+const Red = styled.p`
+  color: red;
+`
 
 const onSubmit = values => {
-  console.log(values);
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log(values);
 
-  // return { [FORM_ERROR]: "false alarm" };
-  return {};
+      if (values.email === "foo@bar.baz") {
+        reject({ email: "That email is already taken" });
+        return;
+      }
+
+      if (values.role === "fail please") {
+        reject({
+          role: "You knew this was going to happen?",
+          [FORM_ERROR]: "This is an error from the API, check fields"
+        });
+        return;
+      }
+
+      resolve();
+      alert('Success, check console')
+    }, 2000);
+  });
 };
 
 const App = () => (
   <AppContainer>
     <Form onSubmit={onSubmit} pages={["user", "privacy", "done"]}>
-      {({ submitting, submitFormError }) => (
+      {({ submitting, submitFailed, submitFormError }) => (
         <React.Fragment>
           <FormPage page="user">
             <Field
@@ -28,26 +58,30 @@ const App = () => (
               component={TextInput}
               label="Name"
               validator={isEmpty}
+              required
             />
-            <Field
-              name="role"
-              component={TextInput}
-              label="Role"
-              validator={isEmpty}
-            />
+            <Field name="role" component={TextInput} label="Role" />
             <Field
               name="email"
               component={TextInput}
               label="Email"
-              validator={isEmpty}
+              validator={combineValidators(isEmpty, isEmail)}
               type="email"
+              required
             />
             <Field
               name="password"
               component={TextInput}
               label="Password"
-              validator={isEmpty}
+              validator={combineValidators(
+                isEmpty,
+                makeMin(9),
+                oneNum,
+                oneLow,
+                oneUpp
+              )}
               type="password"
+              required
             />
           </FormPage>
           <FormPage page="privacy">
@@ -65,10 +99,12 @@ const App = () => (
             />
           </FormPage>
           <FormPage page="done">
+            <p>Thank you for your time, click submit</p>
             <button>Submit</button>
           </FormPage>
           {submitting && "...loading"}
-          {submitFormError && <p>{submitFormError}</p>}
+          {submitFailed && <Red>submit failed</Red>}
+          {submitFormError && <Red>{submitFormError}</Red>}
         </React.Fragment>
       )}
     </Form>

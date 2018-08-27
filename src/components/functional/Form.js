@@ -42,12 +42,17 @@ class FormProvider extends React.Component {
           ...state.validators,
           [fieldName]: validator
         },
-        pristine: { ...state.pristine, [fieldName]: true }
+        pristine: { ...state.pristine, [fieldName]: true },
+        submitErrors: {
+          ...state.submitErrors,
+          [fieldName]: state.submitErrors[fieldName]
+        }
       }),
       () =>
         this.updateValue(
           fieldName,
-          this.state.values[fieldName] || initialValue
+          this.state.values[fieldName] || initialValue,
+          true
         )
     );
   }
@@ -58,7 +63,7 @@ class FormProvider extends React.Component {
     }));
   }
 
-  updateValue(fieldName, value) {
+  updateValue(fieldName, value, autoUpdate = false) {
     this.setState(state => {
       return {
         values: { ...state.values, [fieldName]: value },
@@ -67,7 +72,10 @@ class FormProvider extends React.Component {
           [fieldName]: state.validators[fieldName]
             ? state.validators[fieldName](value)
             : undefined
-        }
+        },
+        ...(autoUpdate
+          ? {}
+          : { submitErrors: { ...state.submitErrors, [fieldName]: undefined } })
       };
     });
   }
@@ -82,19 +90,17 @@ class FormProvider extends React.Component {
     const { currentPage } = this.state;
     const { pages } = this.props;
 
-    if (this.isFormValid()) {
-      if (currentPage === pages[0]) {
-        return;
-      }
-
-      this.setState(({ currentPage }) => {
-        const previousPage = currentPage
-          ? pages[pages.findIndex(page => page === currentPage) - 1]
-          : pages[0];
-
-        return { currentPage: previousPage };
-      });
+    if (currentPage === pages[0]) {
+      return;
     }
+
+    this.setState(({ currentPage }) => {
+      const previousPage = currentPage
+        ? pages[pages.findIndex(page => page === currentPage) - 1]
+        : pages[0];
+
+      return { currentPage: previousPage };
+    });
   }
 
   nextPage() {
@@ -117,6 +123,8 @@ class FormProvider extends React.Component {
   }
 
   packContextValue() {
+    const { pages } = this.props;
+
     return {
       formState: this.state,
       registerField: this.registerField,
@@ -124,12 +132,13 @@ class FormProvider extends React.Component {
       updateValue: this.updateValue,
       makeFieldDirty: this.makeFieldDirty,
       previousPage: this.previousPage,
-      nextPage: this.nextPage
+      nextPage: this.nextPage,
+      pages
     };
   }
 
   isFormValid() {
-    const { values, validators } = this.state;
+    const { values, validators, submitErrors } = this.state;
 
     const errors = Object.keys(validators)
       .filter(field => validators[field])
@@ -144,6 +153,9 @@ class FormProvider extends React.Component {
       );
 
     const fieldsWithErrors = Object.keys(errors).filter(field => errors[field]);
+    const fieldsWithSubmitErrors = Object.keys(submitErrors).filter(
+      field => submitErrors[field] && validators[field]
+    );
 
     this.setState(state => ({
       errors,
@@ -155,7 +167,7 @@ class FormProvider extends React.Component {
       }
     }));
 
-    return !fieldsWithErrors.length;
+    return !fieldsWithErrors.length && !fieldsWithSubmitErrors.length;
   }
 
   packSubmitErrors(errors) {
@@ -207,10 +219,16 @@ class FormProvider extends React.Component {
   }
 
   packRenderProps() {
-    const { submitting, submitFormError, currentPage } = this.state;
+    const {
+      submitting,
+      submitFailed,
+      submitFormError,
+      currentPage
+    } = this.state;
 
     return {
       submitting,
+      submitFailed,
       submitFormError,
       currentPage
     };
@@ -219,7 +237,7 @@ class FormProvider extends React.Component {
   render() {
     return (
       <FormContext.Provider value={this.packContextValue()}>
-        <form onSubmit={this.onSubmit}>
+        <form onSubmit={this.onSubmit} noValidate>
           {this.props.children(this.packRenderProps())}
         </form>
       </FormContext.Provider>

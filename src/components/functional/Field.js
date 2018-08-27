@@ -22,7 +22,11 @@ class Field extends React.Component {
       fieldProps: { name, validator, type }
     } = this.props;
 
-    registerField(name, validator, this.isCheckbox() ? false : undefined);
+    registerField(
+      name,
+      validator || (() => undefined),
+      this.isCheckbox() ? false : undefined
+    );
   }
 
   componentWillUnmount() {
