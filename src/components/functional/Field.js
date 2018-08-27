@@ -52,6 +52,7 @@ class Field extends React.Component {
 
     return {
       error: formState.errors[name],
+      submitError: formState.submitErrors[name],
       pristine: formState.pristine[name]
     };
   }
