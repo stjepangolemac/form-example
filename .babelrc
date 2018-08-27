@@ -1,4 +1,17 @@
 {
   "presets": ["react-app"],
-  "plugins": ["transform-class-properties"]
+  "plugins": [
+    "transform-class-properties",
+    [
+      "module-resolver",
+      {
+        "root": ["./src"],
+        "alias": {
+          "pres": "./src/components/presentational",
+          "func": "./src/components/functional",
+          "util": "./src/utils"
+        }
+      }
+    ]
+  ]
 }

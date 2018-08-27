@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-scripts-parcel": "0.0.24"
+    "react-scripts-parcel": "0.0.24",
+    "styled-components": "^3.4.5"
   },
   "scripts": {
     "start": "react-scripts-parcel start",
@@ -25,5 +27,8 @@
       "Firefox ESR",
       "not ie < 11"
     ]
+  },
+  "devDependencies": {
+    "babel-plugin-module-resolver": "^3.1.1"
   }
 }
