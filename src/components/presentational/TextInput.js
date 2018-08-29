@@ -40,4 +40,9 @@ TextInput.propTypes = {
   required: PropTypes.bool
 };
 
+TextInput.defaultProps = {
+  input: {},
+  meta: {},
+}
+
 export default TextInput;

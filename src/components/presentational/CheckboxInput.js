@@ -32,4 +32,9 @@ CheckboxInput.propTypes = {
   label: PropTypes.string
 };
 
+CheckboxInput.defaultProps = {
+  input: {},
+  meta: {},
+}
+
 export default CheckboxInput;

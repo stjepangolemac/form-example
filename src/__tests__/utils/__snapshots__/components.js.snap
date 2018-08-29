@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`presentational componenets should match snapshots 1`] = `
+<div
+  className="AppContainer-fyEKNQ gLmZYI"
+/>
+`;
+
+exports[`presentational componenets should match snapshots 2`] = `
+Array [
+  <input
+    type="checkbox"
+  />,
+  <label
+    htmlFor={undefined}
+  />,
+  <p
+    className="CheckboxInput__Error-ddbWLI wrdjp"
+  />,
+]
+`;
+
+exports[`presentational componenets should match snapshots 3`] = `
+Array [
+  <label
+    htmlFor={undefined}
+  >
+    : 
+    <span
+      className="TextInput__Red-eBiRuV eTAOJM"
+    >
+      *
+    </span>
+  </label>,
+  <br />,
+  <input
+    type="text"
+  />,
+  <p
+    className="TextInput__Error-bPOzPg jtXBAh"
+  />,
+]
+`;
