@@ -33,21 +33,23 @@ const FormContainer = styled.div`
 const onSubmit = values => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      console.log(values);
-
       if (values.email === "foo@bar.baz") {
-        reject({ email: "That email is already taken" });
+        reject({
+          email: "That email is already taken",
+          [FORM_ERROR]: "There were some errors, please check fields"
+        });
         return;
       }
 
       if (values.role === "fail please") {
         reject({
           role: "You knew this was going to happen?",
-          [FORM_ERROR]: "This is an error from the API, check fields"
+          [FORM_ERROR]: "There were some errors, please check fields"
         });
         return;
       }
 
+      console.log(values);
       resolve();
     }, 2000);
   });
