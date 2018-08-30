@@ -5,7 +5,7 @@ This is an example that shows how to implement React helpers to build and mainta
 The API is very similar to `redux-form` and `final-form` but I did no source code reading prior to developing this.
 
 ## Live demo
-The demo is available on this [link](https://build-egfwgjorox.now.sh). 
+The demo is available on this [link](https://build-btbbnfwqty.now.sh). 
 
 Submit errors can be caused by submitting 'fail please' in the `role` field or by submitting 'foo@bar.baz' in the `email` field.
 ## Scripts
