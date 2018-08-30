@@ -245,6 +245,8 @@ class FormProvider extends React.Component {
   }
 }
 
+FormProvider.displayName = "Form(Provider)"
+
 FormProvider.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   children: PropTypes.func.isRequired,

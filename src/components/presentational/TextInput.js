@@ -25,6 +25,8 @@ const TextInput = ({
   </React.Fragment>
 );
 
+TextInput.displayName = "TextInput"
+
 TextInput.propTypes = {
   input: PropTypes.shape({
     value: PropTypes.string,

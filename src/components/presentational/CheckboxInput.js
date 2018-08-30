@@ -15,9 +15,11 @@ const CheckboxInput = ({
   <React.Fragment>
     <input {...input} type="checkbox" />
     <label htmlFor={input.id}>{label}</label>
-    <Error>{!pristine && error || submitError}</Error>
+    <Error>{(!pristine && error) || submitError}</Error>
   </React.Fragment>
 );
+
+CheckboxInput.displayName = "CheckboxInput";
 
 CheckboxInput.propTypes = {
   input: PropTypes.shape({
@@ -34,7 +36,7 @@ CheckboxInput.propTypes = {
 
 CheckboxInput.defaultProps = {
   input: {},
-  meta: {},
-}
+  meta: {}
+};
 
 export default CheckboxInput;

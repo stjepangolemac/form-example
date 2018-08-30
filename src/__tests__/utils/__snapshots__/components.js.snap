@@ -1,12 +1,56 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`presentational componenets should match snapshots 1`] = `
+exports[`Field should match snapshot 1`] = `
+<form
+  noValidate={true}
+  onSubmit={[Function]}
+/>
+`;
+
+exports[`Form should match snapshot 1`] = `
+<form
+  noValidate={true}
+  onSubmit={[Function]}
+/>
+`;
+
+exports[`FormPage should match snapshot 1`] = `
+<form
+  noValidate={true}
+  onSubmit={[Function]}
+>
+  <div>
+    <div
+      className="FormPage__PagesNavigation-fkwltY fNrFoB"
+    >
+      <span
+        className="FormPage__NavItem-kKpNlV khEGNc"
+      >
+        foo
+      </span>
+    </div>
+    bar
+    <button
+      onClick={[Function]}
+    >
+      Back
+    </button>
+    <button
+      onClick={[Function]}
+    >
+      Next
+    </button>
+  </div>
+</form>
+`;
+
+exports[`components AppContainer component should match snapshot 1`] = `
 <div
   className="AppContainer-fyEKNQ gLmZYI"
 />
 `;
 
-exports[`presentational componenets should match snapshots 2`] = `
+exports[`components CheckboxInput component should match snapshot 1`] = `
 Array [
   <input
     type="checkbox"
@@ -20,7 +64,7 @@ Array [
 ]
 `;
 
-exports[`presentational componenets should match snapshots 3`] = `
+exports[`components TextInput component should match snapshot 1`] = `
 Array [
   <label
     htmlFor={undefined}
