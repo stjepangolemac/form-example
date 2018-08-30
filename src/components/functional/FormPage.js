@@ -1,18 +1,40 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+import Button from "pres/Button";
+import Center from "pres/Center";
 
 import { FormConsumer } from "func/Form";
 
-const PagesNavigation = styled.div`
+const PagesNavigation = styled.ul`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   margin-bottom: 15px;
+  list-style: none;
+  padding: 0px;
+
+  li + li:before {
+    font-size: 10px;
+    padding: 0 25px;
+    color: black;
+    content: "▶";
+  }
 `;
 
-const NavItem = styled.span`
-  color: ${props => (props.active ? "blue" : undefined)};
+const PageContent = styled.div`
+  margin: 15px 0;
+`;
+
+const activeNavItem = css`
+  font-weight: bold;
+  color: gray;
+`;
+
+const NavItem = styled.li`
+  color: lightgray;
+  ${props => (props.active ? activeNavItem : undefined)};
 `;
 
 function renderNavItems(pages, currentPage) {
@@ -35,11 +57,15 @@ const FormPage = ({ page, children }) => (
           <PagesNavigation>
             {renderNavItems(pages, currentPage)}
           </PagesNavigation>
-          {children}
-          <React.Fragment>
-            <button onClick={previousPage}>Back</button>
-            <button onClick={nextPage}>Next</button>
-          </React.Fragment>
+          <PageContent>{children}</PageContent>
+          <Center>
+            <Button flex onClick={previousPage}>
+              Previous
+            </Button>
+            <Button flex onClick={nextPage}>
+              Next
+            </Button>
+          </Center>
         </div>
       );
     }}

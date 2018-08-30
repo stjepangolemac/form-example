@@ -8,12 +8,20 @@ configure({ adapter: new Adapter() });
 import AppContainer from "pres/AppContainer";
 import CheckboxInput from "pres/CheckboxInput";
 import TextInput from "pres/TextInput";
+import Button from "pres/Button";
+import Center from "pres/Center";
 
 import Form from "func/Form";
 import Field from "func/Field";
 import FormPage from "func/FormPage";
 
-const components = [[AppContainer, {}], [CheckboxInput, {}], [TextInput, {}]];
+const components = [
+  [AppContainer, {}],
+  [CheckboxInput, {}],
+  [TextInput, {}],
+  [Button, { children: "Click me" }],
+  [Center, { children: <div>foo</div> }]
+];
 
 describe("components", () => {
   components.forEach(args => {

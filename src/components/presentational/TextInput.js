@@ -2,6 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
+const InputContainer = styled.div`
+  margin-bottom: 15px;
+`;
+
+const Input = styled.input`
+  padding: 10px 5px;
+  border: 1px solid lightgray;
+  border-radius: 2px;
+  width: 100%;
+`;
+
 const Error = styled.p`
   color: red;
   font-size: 0.75em;
@@ -9,7 +20,7 @@ const Error = styled.p`
 
 const Red = styled.span`
   color: red;
-`
+`;
 
 const TextInput = ({
   label,
@@ -17,15 +28,17 @@ const TextInput = ({
   input,
   meta: { pristine, error, submitError }
 }) => (
-  <React.Fragment>
-    <label htmlFor={input.id}>{label}: <Red>*</Red></label>
+  <InputContainer>
+    <label htmlFor={input.id}>
+      {label}: <Red>*</Red>
+    </label>
     <br />
-    <input {...input} type={type || "text"} />
+    <Input {...input} type={type || "text"} />
     <Error>{(!pristine && error) || submitError}</Error>
-  </React.Fragment>
+  </InputContainer>
 );
 
-TextInput.displayName = "TextInput"
+TextInput.displayName = "TextInput";
 
 TextInput.propTypes = {
   input: PropTypes.shape({
@@ -44,7 +57,7 @@ TextInput.propTypes = {
 
 TextInput.defaultProps = {
   input: {},
-  meta: {},
-}
+  meta: {}
+};
 
 export default TextInput;

@@ -20,34 +20,62 @@ exports[`FormPage should match snapshot 1`] = `
   onSubmit={[Function]}
 >
   <div>
-    <div
-      className="FormPage__PagesNavigation-fkwltY fNrFoB"
+    <ul
+      className="FormPage__PagesNavigation-fkwltY bfNUgn"
     >
-      <span
-        className="FormPage__NavItem-kKpNlV khEGNc"
+      <li
+        className="FormPage__NavItem-kKpNlV chQxTR"
       >
         foo
-      </span>
+      </li>
+    </ul>
+    <div
+      className="FormPage__PageContent-iNekjJ jFejDm"
+    >
+      bar
     </div>
-    bar
-    <button
-      onClick={[Function]}
+    <div
+      className="Center-jVIFgs gUWusV"
     >
-      Back
-    </button>
-    <button
-      onClick={[Function]}
-    >
-      Next
-    </button>
+      <button
+        className="Button-hYXUXp ksoPdZ"
+        onClick={[Function]}
+      >
+        Previous
+      </button>
+      <button
+        className="Button-hYXUXp ksoPdZ"
+        onClick={[Function]}
+      >
+        Next
+      </button>
+    </div>
   </div>
 </form>
 `;
 
 exports[`components AppContainer component should match snapshot 1`] = `
 <div
-  className="AppContainer-fyEKNQ gLmZYI"
+  className="AppContainer-fyEKNQ dBeOiF"
 />
+`;
+
+exports[`components Button component should match snapshot 1`] = `
+<button
+  className="Button-hYXUXp ceqDRH"
+>
+  Click me
+</button>
+`;
+
+exports[`components Center component should match snapshot 1`] = `
+<div
+  className="Center-jVIFgs gUWusV"
+>
+  <div>
+    foo
+  </div>
+</div>
 `;
 
 exports[`components CheckboxInput component should match snapshot 1`] = `
@@ -65,7 +93,9 @@ Array [
 `;
 
 exports[`components TextInput component should match snapshot 1`] = `
-Array [
+<div
+  className="TextInput__InputContainer-eyrJvj fPIlSe"
+>
   <label
     htmlFor={undefined}
   >
@@ -75,13 +105,14 @@ Array [
     >
       *
     </span>
-  </label>,
-  <br />,
+  </label>
+  <br />
   <input
+    className="TextInput__Input-dYZOmi gmYQdN"
     type="text"
-  />,
+  />
   <p
     className="TextInput__Error-bPOzPg jtXBAh"
-  />,
-]
+  />
+</div>
 `;
