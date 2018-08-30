@@ -113,13 +113,13 @@ const App = () => (
                     <Loader />
                   </Center>
                 )}
-                <Button full primary>
+                {submitFailed &&
+                  submitFormError && <Red>{submitFormError}</Red>}
+                <Button full primary disabled={submitting}>
                   Submit
                 </Button>
               </div>
             </FormPage>
-            {submitFailed && <Red>submit failed</Red>}
-            {submitFormError && <Red>{submitFormError}</Red>}
           </React.Fragment>
         )}
       </Form>

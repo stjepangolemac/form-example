@@ -229,8 +229,7 @@ class FormProvider extends React.Component {
     return {
       submitting,
       submitFailed,
-      submitFormError,
-      currentPage
+      submitFormError
     };
   }
 
@@ -245,7 +244,7 @@ class FormProvider extends React.Component {
   }
 }
 
-FormProvider.displayName = "Form(Provider)"
+FormProvider.displayName = "Form(Provider)";
 
 FormProvider.propTypes = {
   onSubmit: PropTypes.func.isRequired,
