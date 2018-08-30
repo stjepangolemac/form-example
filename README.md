@@ -1,6 +1,6 @@
 # form-example
 
-This is an example that shows how to implement React helpers to build and maintain form.
+This is an example that shows how to implement React helpers to build and maintain forms.
 
 The API is very similar to `redux-form` and `final-form` but I did no source code reading prior to developing this.
 
